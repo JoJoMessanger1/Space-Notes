@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tagebuch</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Zusätzliche Styles für diary.html */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #4a90e2;
+      color: white;
+    }
+    #backBtn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    #diaryTitle {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 1rem;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      background: #fefefe;
+      color: #222;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #canvasWrapper {
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 300px;
+      touch-action: none;
+    }
+
+    #canvasControls {
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    #canvasControls button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      background: #4a90e2;
+      color: white;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    #canvasControls button:hover {
+      background: #357abd;
+    }
+
+    #multimediaSection {
+      margin-top: 1rem;
+    }
+
+    #multimediaSection input {
+      margin-top: 0.5rem;
+    }
+
+    #entriesList {
+      margin-top: 1.5rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    #entriesList li {
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Darkmode Anpassungen */
+    body.dark-mode main {
+      background: #1e1e1e;
+      color: #e0e0e0;
+    }
+    body.dark-mode textarea {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #555;
+    }
+    body.dark-mode #canvasWrapper {
+      border-color: #555;
+    }
+    body.dark-mode #entriesList li {
+      border-color: #555;
+    }
+    body.dark-mode #canvasControls button {
+      background: #4a90e2;
+    }
+    body.dark-mode #canvasControls button:hover {
+      background: #357abd;
+    }
+
+    /* PIN Abfrage Overlay */
+    #pinOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 9999;
+    }
+
+    #pinOverlay input {
+      font-size: 2rem;
+      padding: 0.5rem 1rem;
+      width: 150px;
+      text-align: center;
+      margin-top: 1rem;
+      border-radius: 6px;
+      border: none;
+    }
+
+    #pinOverlay button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      background: #4a90e2;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+    }
+    #pinOverlay button:hover {
+      background: #357abd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="backBtn" title="Zurück zur Übersicht">←</button>
+    <div id="diaryTitle"></div>
+    <button id="toggleThemeBtn" aria-label="Darkmode umschalten">🌙</button>
+  </header>
+
+  <main>
+    <!-- TEXT Eintrag -->
+    <section>
+      <h2>Text schreiben</h2>
+      <textarea id="textEntry" placeholder="Deinen Eintrag schreiben..."></textarea>
+      <button id="saveTextBtn">Speichern</button>
+    </section>
+
+    <!-- ZEICHNEN -->
+    <section>
+      <h2>Zeichnen</h2>
+      <div id="canvasWrapper">
+        <canvas id="drawCanvas" width="600" height="300"></canvas>
+      </div>
+      <div id="canvasControls">
+        <button id="clearCanvasBtn">Löschen</button>
+        <button id="saveCanvasBtn">Speichern</button>
+      </div>
+    </section>
+
+    <!-- MULTIMEDIA -->
+    <section id="multimediaSection">
+      <h2>Multimedia hinzufügen</h2>
+      <label>Bilder hochladen:</label>
+      <input type="file" id="imageInput" accept="image/*" multiple />
+      <div id="imagePreview"></div>
+
+      <label>Audio aufnehmen / hochladen:</label>
+      <input type="file" id="audioInput" accept="audio/*" multiple />
+      <div id="audioPreview"></div>
+    </section>
+
+    <!-- Einträge anzeigen -->
+    <section>
+      <h2>Deine Einträge</h2>
+      <ul id="entriesList"></ul>
+    </section>
+  </main>
+
+  <!-- PIN Overlay -->
+  <div id="pinOverlay" style="display:none;">
+    <h2>Bitte PIN eingeben</h2>
+    <input type="password" id="pinInput" maxlength="4" pattern="\d{4}" placeholder="1234" autofocus />
+    <button id="pinSubmitBtn">Entsperren</button>
+  </div>
+
+  <script src="diary.js"></script>
+</body>
+</html>
