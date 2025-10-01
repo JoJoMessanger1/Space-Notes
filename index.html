@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tagebuch Übersicht</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Meine Tagebücher</h1>
+    <button id="toggleThemeBtn" aria-label="Darkmode umschalten">🌙</button>
+  </header>
+
+  <main>
+    <section id="createDiarySection">
+      <h2>Neues Tagebuch erstellen</h2>
+      <label for="diaryTitle">Titel:</label>
+      <input type="text" id="diaryTitle" placeholder="Titel eingeben" />
+
+      <label for="diaryColor">Farbe des Buchdeckels:</label>
+      <input type="color" id="diaryColor" value="#ff0000" />
+
+      <label for="diaryPin">PIN (4-stellig):</label>
+      <input type="password" id="diaryPin" maxlength="4" pattern="\d{4}" placeholder="1234" />
+
+      <button id="createDiaryBtn">Tagebuch erstellen</button>
+    </section>
+
+    <section id="diaryListSection">
+      <h2>Deine Tagebücher</h2>
+      <ul id="diaryList"></ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
